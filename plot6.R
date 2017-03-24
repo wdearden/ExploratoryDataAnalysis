@@ -27,6 +27,7 @@ summed$City %<>% recode('06037'='Los Angeles', '24510'='Baltimore')
 png('plot6.png', width=480, height=480)
 p <- ggplot(data=summed, aes(x=Year, y=Emissions, fill=Vehicle)) + facet_grid(.~City) +
     geom_line(stat='identity') +
+    labs(color='Vehicle') +
     ggtitle("Baltimore, LA motor vehicle emissions")
 print(p)
 dev.off()
