@@ -15,9 +15,9 @@ names(summed) <- c('Year', 'Type', 'Emissions')
 
 ###Print and save plot
 png('plot3.png', width=480, height=480)
-p <- ggplot(data = summed, aes(x = summed$Year, y = summed$Emissions, color = summed$Type)) +    
+p <- ggplot(data = summed, aes(x = Year, y = Emissions, color = Type)) +    
     geom_line() + geom_point() +
-    ggtitle('Emissions in Baltimore City') +
+    ggtitle('Emissions in Baltimore City 1999-2008') +
     labs(color='Source Type') +
     xlab('Year') + ylab('Emissions')
 print(p)

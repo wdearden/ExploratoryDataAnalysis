@@ -1,0 +1,32 @@
+##Plot 4
+###See get_nei_data.R for read-in of data
+###Run from main.R
+
+require(ggplot2)
+require(dplyr)
+require(magrittr)
+
+if(!exists('NEI')) {
+    source('get_nei_data.R')
+}
+
+###Subset and summarize data
+motor_sources <- SCC[grep("mobile - on-road", SCC$EI.Sector, ignore.case=TRUE), c('SCC')]
+NEI_motor <- NEI[NEI$SCC %in% motor_sources,]
+NEI_subset <- NEI_motor[NEI_motor$fips %in% c('24510', '06037'),]
+NEI_subset <- merge(x = NEI_subset, y = SCC[,c('SCC', 'EI.Sector')], by = "SCC", all.x = TRUE)
+summed <- aggregate(NEI_subset$Emissions, by=list(NEI_subset$year, NEI_subset$EI.Sector, NEI_subset$fips), FUN=sum, na.rm=TRUE)
+names(summed) <- c('Year', 'Vehicle', 'City', 'Emissions')
+summed$Vehicle %<>% recode('Mobile - On-Road Diesel Heavy Duty Vehicles'='Diesel - Heavy Duty',
+                           'Mobile - On-Road Diesel Light Duty Vehicles'='Diesel - Light Duty',
+                           'Mobile - On-Road Gasoline Heavy Duty Vehicles'='Gasoline - Heavy Duty',
+                           'Mobile - On-Road Gasoline Light Duty Vehicles'='Gasoline - Light Duty')
+summed$City %<>% recode('06037'='Los Angeles', '24510'='Baltimore')
+
+###Print and save plot
+png('plot6.png', width=480, height=480)
+p <- ggplot(data=summed, aes(x=Year, y=Emissions, fill=Vehicle)) + facet_grid(.~City) +
+    geom_line(stat='identity') +
+    ggtitle("Baltimore, LA motor vehicle emissions")
+print(p)
+dev.off()

@@ -16,3 +16,4 @@ plot(summed[,1], summed[,2], type='b',
      xlab='Year', ylab='Total emissions',
      main='Total emissions by year')
 dev.off()
+

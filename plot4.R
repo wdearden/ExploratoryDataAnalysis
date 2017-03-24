@@ -11,15 +11,15 @@ if(!exists('NEI')) {
 ###Subset and summarize data
 coal_sources <- SCC[grep('coal', SCC$Short.Name, ignore.case=TRUE), c('SCC')]
 NEI_coal <- NEI[NEI$SCC %in% coal_sources,]
-summed <- aggregate(NEI_coal$Emissions, by=list(NEI_coal$year), FUN=sum, na.rm=TRUE)
-names(summed) <- c('Year', 'Emissions')
+summed <- aggregate(NEI_coal$Emissions, by=list(NEI_coal$year, NEI_coal$type), FUN=sum, na.rm=TRUE)
+names(summed) <- c('Year', 'Type', 'Emissions')
 
 ###Print and save plot
 png('plot4.png', width=480, height=480)
-p <- ggplot(data = summed, aes(x = summed$Year, y = summed$Emissions)) +    
+p <- ggplot(data = summed, aes(x = Year, y = Emissions, color = Type)) +    
     geom_line() + geom_point() +
-    ggtitle('Emissions from Coal Sources') +
-    xlab('Year') + ylab('Emissions') +
-    expand_limits(y=0)
+    ggtitle('Coal Emissions by Type 1999-2008') +
+    labs(color='Source Type') +
+    xlab('Year') + ylab('Emissions')
 print(p)
 dev.off()
